@@ -33,4 +33,8 @@ public class PlayerViewModel extends AndroidViewModel {
     public void delete(Player player) {
         playerRepository.delete(player);
     }
+
+    public void update(Player player) {
+        playerRepository.update(player);
+    }
 }

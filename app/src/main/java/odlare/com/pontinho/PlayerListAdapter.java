@@ -18,10 +18,16 @@ public class PlayerListAdapter extends  RecyclerView.Adapter<PlayerListAdapter.P
     private static final String S3_BASE_URL = "https://s3.us-east-2.amazonaws.com/segurofacil/pontinho/";
 
     private Context context;
+    private PlayerOnClickHandle playerOnClickHandle;
     private List<Player> players;
 
-    public PlayerListAdapter(Context context) {
+    public interface PlayerOnClickHandle {
+        void onClick(int position);
+    }
+
+    public PlayerListAdapter(Context context, PlayerOnClickHandle playerOnClickHandle) {
         this.context = context;
+        this.playerOnClickHandle = playerOnClickHandle;
     }
 
     @NonNull
@@ -71,6 +77,13 @@ public class PlayerListAdapter extends  RecyclerView.Adapter<PlayerListAdapter.P
             this.phone = itemView.findViewById(R.id.player_phone);
             this.email = itemView.findViewById(R.id.player_email);
             this.photo = itemView.findViewById(R.id.player_photo);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    playerOnClickHandle.onClick(getAdapterPosition());
+                }
+            });
         }
     }
 }

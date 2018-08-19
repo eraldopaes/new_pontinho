@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 public class NewPlayerActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private Integer id;
     private EditText name;
     private EditText lastname;
     private EditText phone;
@@ -23,6 +24,16 @@ public class NewPlayerActivity extends AppCompatActivity implements View.OnClick
         lastname = findViewById(R.id.edt_last_name);
         email = findViewById(R.id.edt_email);
         phone = findViewById(R.id.edt_phone);
+
+        Intent intent = getIntent();
+
+        if (intent != null) {
+            this.id = intent.getIntExtra("id", -1);
+            name.setText(intent.getStringExtra("name"));
+            lastname.setText(intent.getStringExtra("lastname"));
+            email.setText(intent.getStringExtra("email"));
+            phone.setText(intent.getStringExtra("phone"));
+        }
 
         Button button = findViewById(R.id.button);
         button.setOnClickListener(this);
@@ -39,6 +50,7 @@ public class NewPlayerActivity extends AppCompatActivity implements View.OnClick
 
                 Intent intent = new Intent();
 
+                intent.putExtra("id", this.id);
                 intent.putExtra("name", name.getText().toString());
                 intent.putExtra("lastname", lastname.getText().toString());
                 intent.putExtra("email", email.getText().toString());

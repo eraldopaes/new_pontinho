@@ -33,6 +33,25 @@ public class PlayerRepository {
         new DeleteAsyncTask(playerDAO).execute(player);
     }
 
+    public void update(Player player) {
+        new UpdateAsyncTask(playerDAO).execute(player);
+    }
+
+    private static class UpdateAsyncTask extends AsyncTask<Player, Void, Void> {
+
+        private PlayerDAO dao;
+
+        private UpdateAsyncTask(PlayerDAO dao) {
+            this.dao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(Player... players) {
+            dao.update(players[0]);
+            return null;
+        }
+    }
+
     private static class DeleteAsyncTask extends AsyncTask<Player, Void, Void> {
 
         private PlayerDAO dao;

@@ -11,19 +11,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PlayerListAdapter.PlayerOnClickHandle {
 
     public static final int NEW_PLAYER_ACTIVITY_REQUEST_CODE = 1;
+    public static final int UPDATE_PLAYER_ACTIVITY_REQUEST_CODE = 2;
 
+    PlayerListAdapter playerListAdapter;
     private PlayerViewModel playerViewModel;
 
     @Override
@@ -33,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        final PlayerListAdapter playerListAdapter = new PlayerListAdapter(this);
+        playerListAdapter = new PlayerListAdapter(this, this);
         recyclerView.setAdapter(playerListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -104,8 +103,32 @@ public class MainActivity extends AppCompatActivity {
             Player player = new Player(name, lastname, phone, email);
             playerViewModel.insert(player);
 
-        } else {
-            Toast.makeText(getApplicationContext(), "Não foi possível salvar", Toast.LENGTH_LONG).show();
+        } else if (requestCode == UPDATE_PLAYER_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+
+            Integer id = data.getIntExtra("id", -1);
+            String name = data.getStringExtra("name");
+            String lastname = data.getStringExtra("lastname");
+            String email = data.getStringExtra("email");
+            String phone = data.getStringExtra("phone");
+
+            Player player = new Player(id, name, lastname, phone, email);
+            playerViewModel.update(player);
         }
+    }
+
+    @Override
+    public void onClick(int position) {
+
+        Player playerAtPosition = playerListAdapter.getPlayerAtPosition(position);
+
+        Intent intent = new Intent(getApplicationContext(), NewPlayerActivity.class);
+
+        intent.putExtra("id", playerAtPosition.getId());
+        intent.putExtra("name", playerAtPosition.getName());
+        intent.putExtra("lastname", playerAtPosition.getLastname());
+        intent.putExtra("email", playerAtPosition.getEmail());
+        intent.putExtra("phone", playerAtPosition.getPhone());
+
+        startActivityForResult(intent, UPDATE_PLAYER_ACTIVITY_REQUEST_CODE);
     }
 }
